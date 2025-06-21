@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard de Estoque - Mercado</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Controle de Consumo e Estoque</h1>
+
+  <div id="form">
+    <input type="text" id="item" placeholder="Item">
+    <input type="text" id="consumo" placeholder="Consumo">
+    <input type="text" id="estoque" placeholder="Estoque">
+    <input type="text" id="status" placeholder="Status">
+    <button onclick="adicionarItem()">Adicionar</button>
+    <input type="hidden" id="editRow">
+    <button id="saveEdit" style="display:none;" onclick="salvarEdicao()">Salvar Edição</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Consumo</th>
+        <th>Estoque</th>
+        <th>Status</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody id="tabela-itens"></tbody>
+  </table>
+
+  <script src="script.js"></script>
+</body>
+</html>
