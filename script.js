@@ -1,4 +1,12 @@
-const apiUrl = 'https://script.google.com/macros/s/AKfycbz60EPKBGEEV6N_4KoXwel-mgK4p9F9SyIG9WEhC31leBMj7zOAswEJnh6IiPKulBDU3Q/exec';  // <-- Cole aqui o link da sua API do Apps Script
+const apiUrl = 'SUA_API_URL_AQUI';  // <-- Coloque aqui seu link da API Google Apps Script
+let rowToDelete = null;
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.style.display = 'block';
+  setTimeout(() => { toast.style.display = 'none'; }, 3000);
+}
 
 function carregarItens() {
   fetch(`${apiUrl}?action=get`)
@@ -14,8 +22,8 @@ function carregarItens() {
             <td>${item.estoque}</td>
             <td>${item.status}</td>
             <td>
-              <button onclick="editarItem('${item.row}', '${item.item}', '${item.consumo}', '${item.estoque}', '${item.status}')">✏️ Editar</button>
-              <button onclick="excluirItem('${item.row}')">🗑️ Excluir</button>
+              <button class="edit" onclick="editarItem('${item.row}', '${item.item}', '${item.consumo}', '${item.estoque}', '${item.status}')">✏️ Editar</button>
+              <button class="delete" onclick="confirmarExclusao('${item.row}')">🗑️ Excluir</button>
             </td>
           </tr>
         `;
@@ -24,23 +32,22 @@ function carregarItens() {
 }
 
 function adicionarItem() {
-  const item = document.getElementById('item').value;
-  const consumo = document.getElementById('consumo').value;
-  const estoque = document.getElementById('estoque').value;
-  const status = document.getElementById('status').value;
+  const item = document.getElementById('item').value.trim();
+  const consumo = document.getElementById('consumo').value.trim();
+  const estoque = document.getElementById('estoque').value.trim();
+  const status = document.getElementById('status').value.trim();
+
+  if (!item || !consumo || !estoque || !status) {
+    showToast("Preencha todos os campos!");
+    return;
+  }
 
   fetch(`${apiUrl}?action=add&item=${item}&consumo=${consumo}&estoque=${estoque}&status=${status}`)
     .then(() => {
       limparForm();
       carregarItens();
+      showToast("Item adicionado com sucesso!");
     });
-}
-
-function excluirItem(row) {
-  if (confirm('Tem certeza que deseja excluir este item?')) {
-    fetch(`${apiUrl}?action=delete&row=${row}`)
-      .then(() => carregarItens());
-  }
 }
 
 function editarItem(row, item, consumo, estoque, status) {
@@ -54,15 +61,21 @@ function editarItem(row, item, consumo, estoque, status) {
 
 function salvarEdicao() {
   const row = document.getElementById('editRow').value;
-  const item = document.getElementById('item').value;
-  const consumo = document.getElementById('consumo').value;
-  const estoque = document.getElementById('estoque').value;
-  const status = document.getElementById('status').value;
+  const item = document.getElementById('item').value.trim();
+  const consumo = document.getElementById('consumo').value.trim();
+  const estoque = document.getElementById('estoque').value.trim();
+  const status = document.getElementById('status').value.trim();
+
+  if (!item || !consumo || !estoque || !status) {
+    showToast("Preencha todos os campos!");
+    return;
+  }
 
   fetch(`${apiUrl}?action=edit&row=${row}&item=${item}&consumo=${consumo}&estoque=${estoque}&status=${status}`)
     .then(() => {
       limparForm();
       carregarItens();
+      showToast("Item editado com sucesso!");
     });
 }
 
@@ -73,6 +86,37 @@ function limparForm() {
   document.getElementById('status').value = '';
   document.getElementById('editRow').value = '';
   document.getElementById('saveEdit').style.display = 'none';
+}
+
+function confirmarExclusao(row) {
+  rowToDelete = row;
+  document.getElementById('modal').style.display = 'flex';
+}
+
+function fecharModal() {
+  rowToDelete = null;
+  document.getElementById('modal').style.display = 'none';
+}
+
+document.getElementById('confirmDelete').addEventListener('click', () => {
+  if (rowToDelete) {
+    fetch(`${apiUrl}?action=delete&row=${rowToDelete}`)
+      .then(() => {
+        carregarItens();
+        showToast("Item excluído!");
+        fecharModal();
+      });
+  }
+});
+
+function filtrarTabela() {
+  const input = document.getElementById('searchInput').value.toLowerCase();
+  const linhas = document.querySelectorAll('#tabela-itens tr');
+
+  linhas.forEach(linha => {
+    const textoLinha = linha.innerText.toLowerCase();
+    linha.style.display = textoLinha.includes(input) ? '' : 'none';
+  });
 }
 
 window.onload = carregarItens;

@@ -4,20 +4,27 @@
   <meta charset="UTF-8">
   <title>Dashboard de Estoque - Mercado</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <h1>Controle de Consumo e Estoque</h1>
+  <header>
+    <h1>📦 Controle de Estoque - Mercado</h1>
+  </header>
 
-  <div id="form">
+  <section id="form">
     <input type="text" id="item" placeholder="Item">
     <input type="text" id="consumo" placeholder="Consumo">
     <input type="text" id="estoque" placeholder="Estoque">
     <input type="text" id="status" placeholder="Status">
-    <button onclick="adicionarItem()">Adicionar</button>
     <input type="hidden" id="editRow">
-    <button id="saveEdit" style="display:none;" onclick="salvarEdicao()">Salvar Edição</button>
-  </div>
+    <button onclick="adicionarItem()">➕ Adicionar</button>
+    <button id="saveEdit" style="display:none;" onclick="salvarEdicao()">💾 Salvar Edição</button>
+  </section>
+
+  <section id="search">
+    <input type="text" id="searchInput" placeholder="🔎 Buscar item..." onkeyup="filtrarTabela()">
+  </section>
 
   <table>
     <thead>
@@ -31,6 +38,18 @@
     </thead>
     <tbody id="tabela-itens"></tbody>
   </table>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <p>Tem certeza que deseja excluir este item?</p>
+      <button id="confirmDelete">Sim</button>
+      <button onclick="fecharModal()">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast"></div>
 
   <script src="script.js"></script>
 </body>
