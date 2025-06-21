@@ -1,4 +1,4 @@
-const apiUrl = 'SUA_API_URL_AQUI';  // <-- Coloque aqui seu link da API Google Apps Script
+const apiUrl = 'https://script.google.com/macros/s/AKfycbz60EPKBGEEV6N_4KoXwel-mgK4p9F9SyIG9WEhC31leBMj7zOAswEJnh6IiPKulBDU3Q/exec';  // <-- Coloque aqui seu link da API Google Apps Script
 let rowToDelete = null;
 
 function showToast(message) {
